@@ -167,7 +167,7 @@ Vue.component('task', {
         },
         addSubtask() {
             if (!this.isLastColumn && this.newSubtaskTitle.trim() !== '') {
-                if (this.task.subtasks.length < 5) {
+                if (this.task.subtasks.length < 5 ){
                     this.task.subtasks.push({ title: this.newSubtaskTitle.trim(), done: false });
                     this.newSubtaskTitle = '';
                     this.$emit('update-task', this.task);
@@ -264,7 +264,7 @@ let app = new Vue({
             if (data.column.index !== 0 || data.column.disabled) return
             if (this.columns[1].tasks.length > 4) {
                 this.columns[0].disabled = true
-                this.addTaskDisabled = true
+                this.addTaskDisabled.disabled = true
                 alert("Нельзя добавить ещё!")
                 return;
             }
@@ -280,11 +280,11 @@ let app = new Vue({
         },
         enabled() {
             this.columns[0].disabled = false;
-            this.addTaskDisabled = false;
+            this.addTaskDisabled.disabled = false;
             this.columns[0].tasks.forEach(task => {
                 task.subtasks = task.subtasks.filter(subtask => subtask.title);
                 if (Math.ceil(task.subtasks.length / 2) === task.subtasks.filter(subtask => subtask.done).length) {
-                    this.move({task: task, column: this.columns[0]}, this.columns[1]);
+                    this.move({task: task, column: this.columns[0]}, this.columns[1], this.addTaskDisabled);
                 }
             });
         }
