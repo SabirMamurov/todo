@@ -162,15 +162,6 @@ Vue.component('task', {
                 this.$emit('task-half-filled2', this.task);
             }
         },
-        deleteSubtask(index) {
-            if (this.task.subtasks.length > 1) {
-                if (!this.isLastColumn) {
-                    this.task.subtasks.splice(index, 1);
-                    this.$emit('update-task', this.task);
-                    this.$emit('task-half-filled2', this.task);
-                }
-            }
-        }
     },
     computed: {
         isLastColumn() {
