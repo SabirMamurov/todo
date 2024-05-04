@@ -21,6 +21,7 @@ Vue.component('add-task', {
         <button @click="addTask">Добавить карточку</button>
         </div>
     </div>
+    </div>
     `,
     methods: {
         addSubtask() {
@@ -78,6 +79,7 @@ Vue.component('column', {
     template: `
     <div class="column">
         <h2>{{column.title}}</h2>
+        <h6 v-if=""></h6>
         <div class="task">
         <task v-for="(task, index) in sortedTasks"
         :key="index"
@@ -136,11 +138,12 @@ Vue.component('task', {
   <h2>{{ task.title }}</h2>
   <li v-for="(subtask, index) in task.subtasks" class="subtask" :key="index" :class="{ done: subtask.done }" @click="doneSubtask(subtask)">
     {{ subtask.title }}
-    <button v-if="!isLastColumn" @click.stop="deleteSubtask(index)">Удалить</button>
   </li>
   <div v-if="!isLastColumn">
     <input v-model="newSubtaskTitle" placeholder="Новая подзадача" @keyup.enter="addSubtask" />
     <button @click="addSubtask">Добавить</button>
+   </div>
+   </div>
     `,
     updated() {
         if (this.half) {
@@ -156,12 +159,27 @@ Vue.component('task', {
         },
         addSubtask() {
             if (!this.isLastColumn && this.newSubtaskTitle.trim() !== '') {
-                this.task.subtasks.push({ title: this.newSubtaskTitle.trim(), done: false });
-                this.newSubtaskTitle = '';
-                this.$emit('update-task', this.task);
-                this.$emit('task-half-filled2', this.task);
+                if (this.task.subtasks.length < 5) {
+                    this.task.subtasks.push({ title: this.newSubtaskTitle.trim(), done: false });
+                    this.newSubtaskTitle = '';
+                    this.$emit('update-task', this.task);
+                    this.$emit('task-half-filled2', this.task);
+                }
+                else {
+                    alert("Максимальное число задач 5!")
+                }
             }
+
         },
+        deleteSubtask(index) {
+            if (this.task.subtasks.length > 1) {
+                if (!this.isLastColumn) {
+                    this.task.subtasks.splice(index, 1);
+                    this.$emit('update-task', this.task);
+                    this.$emit('task-half-filled2', this.task);
+                }
+            }
+        }
     },
     computed: {
         isLastColumn() {
@@ -237,6 +255,7 @@ let app = new Vue({
             if (data.column.index !== 0 || data.column.disabled) return
             if (this.columns[1].tasks.length > 4) {
                 this.columns[0].disabled = true
+                this.
                 alert("Нельзя добавить ещё!")
                 return;
             }
