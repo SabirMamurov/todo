@@ -18,11 +18,19 @@ Vue.component('add-task', {
         <div v-for="(subtask, index) in task.subtasks"><input placeholder="Task" v-model="subtask.title" :key="index">
         </div>
         <div>
-        <button @click="addTask">Добавить карточку</button>
+        <button @click="addTask" :disabled="addTaskDisabled">Добавить карточку</button>
         </div>
     </div>
     </div>
     `,
+
+    props: {
+        addTaskDisabled: {
+            type: Boolean,
+            default: false
+        }
+    },
+
     methods: {
         addSubtask() {
             if (this.task.subtasks.length < 5){
@@ -226,7 +234,8 @@ let app = new Vue({
                 title: "Завершенные",
                 tasks: [],
             }
-        ]
+        ],
+        addTaskDisabled: false
     },
     mounted() {
         if (!localStorage.getItem('columns')) return
@@ -255,7 +264,7 @@ let app = new Vue({
             if (data.column.index !== 0 || data.column.disabled) return
             if (this.columns[1].tasks.length > 4) {
                 this.columns[0].disabled = true
-                this.
+                this.addTaskDisabled = true
                 alert("Нельзя добавить ещё!")
                 return;
             }
@@ -271,6 +280,7 @@ let app = new Vue({
         },
         enabled() {
             this.columns[0].disabled = false;
+            this.addTaskDisabled = false;
             this.columns[0].tasks.forEach(task => {
                 task.subtasks = task.subtasks.filter(subtask => subtask.title);
                 if (Math.ceil(task.subtasks.length / 2) === task.subtasks.filter(subtask => subtask.done).length) {
